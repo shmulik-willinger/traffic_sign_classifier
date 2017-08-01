@@ -21,40 +21,49 @@
 ### Pipeline description
 
 
-My pipeline consisted of 8 steps:
-1. First, I converted the images to grayscale
+My pipeline consisted of the following steps:
 
-2. Using Gaussian smoothing which is essentially a way of suppressing noise and spurious gradients by averaging
+1. Preprocessing
 
-3. Using Canny edge detection. The algorithm will first detect strong edge (strong gradient) pixels above the high_threshold, and reject pixels below the low_threshold. Next, pixels with values between the low_threshold and high_threshold will be included as long as they are connected to strong edges. The output edges is a binary image with white pixels tracing out the detected edges and black everywhere else
 
-4. Region of interest/ Region-Masking, to represent the vertices of a quadrilateral region that I would like to retain for my color selection, while masking everything else out.
+2. Model Architecture:
 
-5. Hough Transform - using OpenCV function HoughLinesP which gets the output from Canny and the result will be array of lines, containing the endpoints (x1, y1, x2, y2) of all line segments detected by the transform operation
+  Convolution gives us a small linear classifier for patch of the image with output of 28x28x6
+  Pooling layer to decrease the size of the output and prevent overfitting
 
-6. Drawing the lines - In order to draw a single line on the left and right lanes, I created a function that get the hough array and perform the following:
-  * separate the hough array into two arrays, for the left and right lines, according to the slope (derived by the endpoints by using ((y2-y1)/(x2-x1)))
-  * reject outliers slopes for each line according to a min and max values
-  * calculate the mean slope for each line
-  * extend the lines to fill all the slope, in this case I used   simple multiplication with big negative and positive values (\*400 and \*(-400))
-  * calculate the mean of the new lines result with the previews lines for better smoothing
-  * raws lines with color and combine it with the original image
+  We are using the Lenet architecture with the following Spec:
+  layer 1:
+  Convolution layer 1. The output shape should be 28x28x6.
+  Activation 1. Your choice of activation function.
+  Pooling layer 1. The output shape should be 14x14x6.
+  layer 2:
+  Convolution layer 2. The output shape should be 10x10x16.
+  Activation 2. Your choice of activation function.
+  Pooling layer 2. The output shape should be 5x5x16.
+  layer 3:
+  Flatten layer. Flatten the output shape of the final pooling layer such that it's 1D instead of 3D. The easiest way to do is by using tf.contrib.layers.flatten, which is already imported for you.
+  Fully connected layer 1. This should have 120 outputs.
+  Activation 3. Your choice of activation function.
+  layer 4:
+  Fully connected layer 2. This should have 84 outputs.
+  Activation 4. Your choice of activation function.
+  layer 5:
+  Fully connected layer 3. This should have 10 outputs.
 
-7. Create a loop that will take all the tests images and run the pipeline processing on them. The output will be sent to the output folder
-
-8.  run the processing on the videos. The output can be found on the test_videos_output folder
 
 In the following image you can see an example of one of the test images, where the pipeline calulate the mean endpoints and slope for the left line (on blue) and for the right line (on green). then the function extend the lines (the black lines) where some of the endpoints exceeding the boundaries of the picture. The Region-Masking step (marked on yellow) will cut the outliers edges, and the final output will be as smoother as it can.
 ![]( https://github.com/shmulik-willinger/lane_line_detection/blob/master/readme_img/extend_lines.jpg?raw=true)
 
 
-### Potential shortcomings with the current pipeline
+### Hyperparameter to tune
 
-
-One potential shortcoming would be what would happen when the lanes on the road are blurred or erased, sometimes they are even not exist, and the algorithm will have difficulty to draw them
-
-Another shortcoming could be the sharp turns we have in roads. In this cases the pipeline may not work well.
-
+Stride - The amount by which the filter slides 
+Filter depth -  For a depth of k, we need to connect each patch of pixels to k neurons in the next layer
+CNN layers dimentions - Tradeoffs between model size and performance
+learning rate -  
+epochs -
+batch size -
+mean and standard deviation - changing the default parameters of tf.truncated_normal() can result in better performance
 
 ### Possible improvements to your pipeline
 

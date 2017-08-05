@@ -1,6 +1,8 @@
-**Traffic Sign Recognition**
+# **Traffic Sign Recognition**
 
 **Build a Traffic Sign classifier Project**
+
+## The goals
 
 The goals / steps of this project are the following:
 * Load the data set (see below for links to the project data set)
@@ -11,7 +13,7 @@ The goals / steps of this project are the following:
 * Summarize the results with a written report
 
 ---
-**Data Set Summary & Exploration**
+## Data Set Summary & Exploration
 
 The German Traffic Sign provided as the Dataset is a 4D array containing raw pixel data of the traffic sign images, (num examples, width, height, channels).
 'labels' is a 2D array containing the label/class id of the traffic sign. The file signnames.csv contains id -> name mappings for each id.
@@ -28,13 +30,13 @@ Here is a sample of the dataset, displaying the first image from each class:
 
 ![]( https://github.com/shmulik-willinger/traffic_sign_classifier/blob/master/readme_img/dataset_samples.jpg?raw=true)
 
-This are the exploratory visualization of the 'Train and 'Test' data set. It is a bar chart showing distribution of the imsage across the classes (different traffic signs):
+This are the exploratory visualization of the 'Train and 'Test' data set. The bar chart showing distribution of the images across the classes (different traffic signs):
 
 ![]( https://github.com/shmulik-willinger/traffic_sign_classifier/blob/master/readme_img/train_distribution.jpg?raw=true)
 
 ![]( https://github.com/shmulik-willinger/traffic_sign_classifier/blob/master/readme_img/test_distribution.jpg?raw=true)
 
-**Pre-process the Data Set**
+## Pre-process the Data Set
 
 The distribution of signs between classes is very high, and the variance gets up from 210 samples for the lower class to 2250 samples to the highest one.  
 I decided to generate additional data In order to raise the number of dataset samples. I Counted the lower & upper bounds of each class in order to  multiply each class images to raise the amount of training samples.
@@ -61,51 +63,62 @@ Here is the a visualization bar chart showing the distribution of the imsage acr
 
 ![]( https://github.com/shmulik-willinger/traffic_sign_classifier/blob/master/readme_img/distribution_after_preprocessing.jpg?raw=true)
 
-**Model Architecture**
+## Model Architecture
 
-####2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
+My model consisted of the following layers:
 
-My final model consisted of the following layers:
-
-| Layer         		|     Description	        					|
+| Layer | Component        	|     Input	      	| Output |
 |:---------------------:|:---------------------------------------------:|
-| Input         		| 32x32x3 RGB image   							|
-| Convolution 3x3     	| 1x1 stride, same padding, outputs 32x32x64 	|
-| RELU					|												|
-| Max pooling	      	| 2x2 stride,  outputs 16x16x64 				|
-| Convolution 3x3	    | etc.      									|
-| Fully connected		| etc.        									|
-| Softmax				| etc.        									|
-|						|												|
-|						|												|
+| Convolution layer 1 | 2D Convolution layer with 'VALID' padding, filter of (5x5x1) and Stride=1 | (32,32,1) 	| (28,28,6)
+|   	| ReLU Activation 	| (28,28,6) | (28,28,6)|
+| Convolution layer 2|	2D Convolution layer with 'SAME' padding, filter of (3x3x6) and Stride=1	|(28,28,6) | (28,28,6)
+|    	| Max pooling	with 'VALID' padding, Stride=2 and ksize=2				| (28,28,6) | (14,14,6)|
+| Convolution layer 3   | 2D Convolution layer with 'VALID' padding, filter of (5x5x12) and Stride=1	| (14,14,6)| (10,10,16)|
+| 	|  ReLU Activation  		|(10,10,16)|(10,10,16)
+| 	| Max pooling	with 'VALID' padding, Stride=2 and ksize=2			 		|(10,10,16)|(5,5,16)
+| Fully connected	layer 1	| Reshape and Dropout|(5,5,16)| 400
+| | Linear combination WX+b |400| 120
+| | ReLU and Dropout |120| 120
+| Fully connected	layer 2	| Linear combination WX+b|120| 84
+| | ReLU and Dropout |84| 84
+| Fully connected	Output layer	| Linear combination WX+b|84| 43
 
 
+**Model training**
 
-####3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
+To train the model, I used LeNet architecture as a baseline, with additional 2D Convolution layer and a couple of parameter tunning.
+batch size was set to 100, and I also used 100 epochs.
+The learning rate (0.001), mean (0) and sigma (0.1) were left with their default values.   
 
-To train the model, I used an ....
+**Approach taken for finding the solution**
 
-####4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
+I started with LeNet architecture and the train accuracy wasn't high enugh, so I start with changing the default parameters of the batch and epochs which improved the results.
+I applied grayscale on the dataset which give some better results and also the model is much more faster.
+After adding more images to the dataset (in the preprocessing step) I also observed better results.
+Adding the dropout function after each layer also improving the accuracy ('Max pooling' steps dosen't need it since it already performing dropout)
+ReLU activation function produced better results then sigmoid.
+I found that splitting the LeNet first Convolution layer to two 2D Convolution layers helps getting higher accuracy.
+I left the learning rate and the Mean as is since after trying to change them a little bit I got bad results.
+There are lots options to change parameters in the Model - padding, stride, filters, connected shapes and more. I tunned them many times till I got results to my satisfaction.
+AdamOptimizer was set instead of the GradientDescentOptimizer since its using 'momentum'.
+
+Training was performed on an Amazon g2.2xlarge GPU server, and it took about 16 minutes.
 
 My final model results were:
-* training set accuracy of ?
-* validation set accuracy of ?
-* test set accuracy of ?
+* training set accuracy of 96.2%
+* validation set accuracy of 96.2%
+* test set accuracy of 93.4%
 
-If an iterative approach was chosen:
-* What was the first architecture that was tried and why was it chosen?
-* What were some problems with the initial architecture?
-* How was the architecture adjusted and why was it adjusted? Typical adjustments could include choosing a different model architecture, adding or taking away layers (pooling, dropout, convolution, etc), using an activation function or changing the activation function. One common justification for adjusting an architecture would be due to overfitting or underfitting. A high accuracy on the training set but low accuracy on the validation set indicates over fitting; a low accuracy on both sets indicates under fitting.
-* Which parameters were tuned? How were they adjusted and why?
-* What are some of the important design choices and why were they chosen? For example, why might a convolution layer work well with this problem? How might a dropout layer help with creating a successful model?
+![]( https://github.com/shmulik-willinger/traffic_sign_classifier/blob/master/readme_img/validation_accuracy.jpg?raw=true)
 
-If a well known architecture was chosen:
-* What architecture was chosen?
-* Why did you believe it would be relevant to the traffic sign application?
-* How does the final model's accuracy on the training, validation and test set provide evidence that the model is working well?
+The validation accuracy become balanced at around the 60 epoch, so in order to avoid overfitting and save training time I reduced the number of epochs from 100 to 60.
 
 
-###Test a Model on New Images
+overfitting or underfitting?
+How might a dropout layer help with creating a successful model?
+
+
+## Test a Model on New Images
 
 ####1. Choose five German traffic signs found on the web and provide them in the report. For each image, discuss what quality or qualities might be difficult to classify.
 

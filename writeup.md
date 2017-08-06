@@ -38,13 +38,17 @@ This are the exploratory visualization of the 'Train and 'Test' data set. The ba
 
 ## Pre-process the Data Set
 
-The distribution of signs between classes is very high, and the variance gets up from 210 samples for the lower class to 2250 samples to the highest one.  
-I decided to generate additional data In order to raise the number of dataset samples. I Counted the lower & upper bounds of each class in order to  multiply each class images to raise the amount of training samples.
+The distribution of signs between classes is very high, and the variance gets up from 210 samples for the lower class to 2250 samples for the highest one.  
+I decided to generate additional data In order to raise the number of dataset samples. I Counted the lower & upper bounds of each class in order to multiply each class images with respective to the number of original count, to raise the amount of training samples.
 
 I used cv2 librarie to create Perspective Transform and rotation for the new augmented images.
 
-All the images were also Transform to grayscale, since I noticed the accuracy of the model was higher this way (and it shorten the model runtime).
+All the images were also Transform to grayscale, since I noticed the accuracy of the model was higher this way, and of couse it also shorten the model runtime.
 from shape (32,32,3) to (32,32,1)
+
+Here is a sample of the grayscale dataset, displaying the first image from each class:
+
+![]( https://github.com/shmulik-willinger/traffic_sign_classifier/blob/master/readme_img/dataset_samples_gray.jpg?raw=true)
 
 I normalized the data to get higher validation and training accuracy (it accelerates the convergence).
 from [0,255] to [0,1]
@@ -69,19 +73,19 @@ My model consisted of the following layers:
 
 | Layer | Component        	|     Input	      	| Output |
 |:---------------------:|:---------------------------------------------:|
-| Convolution layer 1 | 2D Convolution layer with 'VALID' padding, filter of (5x5x1) and Stride=1 | (32,32,1) 	| (28,28,6)
+| Convolution layer 1 | 2D Convolution layer with 'VALID' padding, filter of (5x5x1) and Stride=1 | (32,32,1) 	| (28,28,6)|
 |   	| ReLU Activation 	| (28,28,6) | (28,28,6)|
-| Convolution layer 2|	2D Convolution layer with 'SAME' padding, filter of (3x3x6) and Stride=1	|(28,28,6) | (28,28,6)
-|    	| Max pooling	with 'VALID' padding, Stride=2 and ksize=2				| (28,28,6) | (14,14,6)|
+| Convolution layer 2|	2D Convolution layer with 'SAME' padding, filter of (3x3x6) and Stride=1	|(28,28,6) | (28,28,6)|
+|    	| Max pooling	with 'VALID' padding, Stride=2 and ksize=2	| (28,28,6) | (14,14,6)|
 | Convolution layer 3   | 2D Convolution layer with 'VALID' padding, filter of (5x5x12) and Stride=1	| (14,14,6)| (10,10,16)|
-| 	|  ReLU Activation  		|(10,10,16)|(10,10,16)
-| 	| Max pooling	with 'VALID' padding, Stride=2 and ksize=2			 		|(10,10,16)|(5,5,16)
-| Fully connected	layer 1	| Reshape and Dropout|(5,5,16)| 400
-| | Linear combination WX+b |400| 120
-| | ReLU and Dropout |120| 120
-| Fully connected	layer 2	| Linear combination WX+b|120| 84
-| | ReLU and Dropout |84| 84
-| Fully connected	Output layer	| Linear combination WX+b|84| 43
+| 	|  ReLU Activation  		|(10,10,16)|(10,10,16)|
+| 	| Max pooling	with 'VALID' padding, Stride=2 and ksize=2	|(10,10,16)|(5,5,16)|
+| Fully connected	layer 1	| Reshape and Dropout|(5,5,16)| 400|
+| | Linear combination WX+b |400| 120|
+| | ReLU and Dropout |120| 120|
+| Fully connected	layer 2	| Linear combination WX+b|120| 84|
+| | ReLU and Dropout |84| 84|
+| Fully connected	Output layer	| Linear combination WX+b|84| 43 |
 
 
 **Model training**
@@ -98,42 +102,43 @@ After adding more images to the dataset (in the preprocessing step) I also obser
 Adding the dropout function after each layer also improving the accuracy ('Max pooling' steps dosen't need it since it already performing dropout)
 ReLU activation function produced better results then sigmoid.
 I found that splitting the LeNet first Convolution layer to two 2D Convolution layers helps getting higher accuracy.
-I left the learning rate and the Mean as is since after trying to change them a little bit I got bad results.
-There are lots options to change parameters in the Model - padding, stride, filters, connected shapes and more. I tunned them many times till I got results to my satisfaction.
+I left the learning rate and the Mean as is since after trying to change them a little bit I didn't get better results.
+There are lots options to change parameters in the Model - padding, stride, filters, connected shapes, weight and bias initialization and more. I tunned them many times till I got results to my satisfaction.
 AdamOptimizer was set instead of the GradientDescentOptimizer since its using 'momentum'.
 
 Training was performed on an Amazon g2.2xlarge GPU server, and it took about 16 minutes.
 
 My final model results were:
 * training set accuracy of 96.2%
-* validation set accuracy of 96.2%
+* validation set accuracy of 95.7%
 * test set accuracy of 93.4%
 
 ![]( https://github.com/shmulik-willinger/traffic_sign_classifier/blob/master/readme_img/validation_accuracy.jpg?raw=true)
 
 The validation accuracy become balanced at around the 60 epoch, so in order to avoid overfitting and save training time I reduced the number of epochs from 100 to 60.
 
-
-overfitting or underfitting?
-How might a dropout layer help with creating a successful model?
+A low accuracy on the training and validation sets imply underfitting. A high accuracy on the training set but low accuracy on the validation set implies overfitting.
 
 
-## Test a Model on New Images
+## Test the Model on New Images
 
-####1. Choose five German traffic signs found on the web and provide them in the report. For each image, discuss what quality or qualities might be difficult to classify.
 
-Here are five German traffic signs that I found on the web:
+Here are 10 German traffic signs that I found on the web:
 
-![alt text][image4] ![alt text][image5] ![alt text][image6]
-![alt text][image7] ![alt text][image8]
+![]( https://github.com/shmulik-willinger/traffic_sign_classifier/blob/master/readme_img/new_images.jpg?raw=true)
 
-The first image might be difficult to classify because ...
+Some of the image (image:0, and image:5) might be difficult to classify because they have two signs combined in each of them. The classifies might label it as one of the signs or non of them.
+The third image (image:2) has a sign that is not part of the train dataset classes, meaning the classifier is lack of information about it and probably will not label it right.
+The other images has the stick of the sign occupies a large part of the picture, and since the images needs to get through the same preprocessing stage (grayscale, normalization, resizing to 32x32 etc.) before running the model on them, the sign size in the images might be significantly smaller then the train dataset.
 
-####2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set (OPTIONAL: Discuss the results in more detail as described in the "Stand Out Suggestions" part of the rubric).
+Also, the images background and signs brightness along with their rotation angles can be challenging.
+
+
+**Model's predictions on the New Images**
 
 Here are the results of the prediction:
 
-| Image			        |     Prediction	        					|
+| Image	number		        |     Sign name| Prediction	        					|
 |:---------------------:|:---------------------------------------------:|
 | Stop Sign      		| Stop sign   									|
 | U-turn     			| U-turn 										|
@@ -142,9 +147,14 @@ Here are the results of the prediction:
 | Slippery Road			| Slippery Road      							|
 
 
-The model was able to correctly guess 4 of the 5 traffic signs, which gives an accuracy of 80%. This compares favorably to the accuracy on the test set of ...
+The model was able to correctly guess 4 of the 5 traffic signs, which gives an accuracy of 80%. This compares favorably to the accuracy on the test set of 96%. The model didn't perform well on the new images.
+
+The images that were not included at all in the training dataset (no suitable class) were labled incorrectly. The other images were processed differently (angles, cropped etc.) so the model also failed to classify them correctly.
+I noticed that the model classify unknown signes as class-19 (Roundabout signs)
 
 ####3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
+
+**Model's predictions on the New Images**
 
 The code for making predictions on my final model is located in the 11th cell of the Ipython notebook.
 
@@ -159,7 +169,8 @@ For the first image, the model is relatively sure that this is a stop sign (prob
 | .01				    | Slippery Road      							|
 
 
-For the second image ...
+For almost all the images the predictor was very certain, even when the results were wrong.
+I noticed that for some of the images - I got different predictions each time I ran the model (with high probability on them)
 
 ### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
 ####1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?

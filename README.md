@@ -11,7 +11,7 @@ Neural networks and deep learning currently provide the best solutions to many p
 A convolutional neural networks (CNN) technique consist of several layers with different filters, where each one pick up different qualities of a patch. The subsequent layers tend to be higher levels in the hierarchy and generally classify more complex ideas, while eventually the CNN classifies the image by combining the larger, more complex objects, grouping together adjacent pixels and treating them as a collective
 The CNN learns all of this on its own and also helps us with translation invariance and gives us smaller, more scalable model.
 
-In this project, we are using deep neural networks and convolutional neural networks to classify traffic signs. We will train and validate a model so it can classify traffic sign images using the [German Traffic Sign Dataset](http://benchmark.ini.rub.de/?section=gtsrb&subsection=dataset). After the model is trained, we will then try out the model on images of German traffic signs that we find on the web.
+This project is using deep neural networks and convolutional neural networks to classify traffic signs. We will train and validate a model so it can classify traffic sign images using the [German Traffic Sign Dataset](http://benchmark.ini.rub.de/?section=gtsrb&subsection=dataset). After the model is trained, we will then try out the model on images of German traffic signs that we find on the web.
 
 More details can be found in the [writeup_report.md](https://github.com/shmulik-willinger/traffic_sign_classifier/blob/master/writeup.md) file.
 
@@ -21,8 +21,10 @@ This project requires **Python 3.5** and the following Python libraries installe
 
 - [Jupyter](http://jupyter.org/)
 - [NumPy](http://www.numpy.org/)
-- [SciPy](https://www.scipy.org/)
-- [scikit-learn](http://scikit-learn.org/)
+- [Matplotlib](https://matplotlib.org/)
+- [OpenCV](https://pypi.python.org/pypi/opencv-python#)
+- [Sklearn](scikit-learn.org/)
+- [Pandas](pandas.pydata.org/)
 - [TensorFlow](http://tensorflow.org)
 
 

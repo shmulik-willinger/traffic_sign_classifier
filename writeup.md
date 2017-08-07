@@ -41,9 +41,9 @@ This are the exploratory visualization of the 'Train and 'Test' data set. The ba
 The distribution of signs between classes is very high, and the variance gets up from 210 samples for the lower class to 2250 samples for the highest one.  
 I decided to generate additional data In order to raise the number of dataset samples. I Counted the lower & upper bounds of each class in order to multiply each class images with respective to the number of original count, to raise the amount of training samples.
 
-I used cv2 librarie to create Perspective Transform and rotation for the new augmented images.
+I used cv2 library to create Perspective Transform and rotation for the new augmented images.
 
-All the images were also Transform to grayscale, since I noticed the accuracy of the model was higher this way, and of couse it also shorten the model runtime.
+All the images were also Transformed to grayscale, since I noticed the accuracy of the model was higher this way, and of couse it also shorten the model runtime.
 from shape (32,32,3) to (32,32,1)
 
 Here is a sample of the grayscale dataset, displaying the first image from each class:
@@ -63,14 +63,14 @@ After the preprocessing, my data set distribution was:
 * Image data shape = (32, 32, 1)
 * Number of classes = 43
 
-Here is the a visualization bar chart showing the distribution of the imsage across the classes before and after the process:
+Here is the visualization bar chart showing the distribution of the images across the classes before and after the process:
 
 ![]( https://github.com/shmulik-willinger/traffic_sign_classifier/blob/master/readme_img/distribution_after_preprocessing.jpg?raw=true)
 
 ## Model Architecture
 
 My model consisted of the following layers:
-
+<!---
 | Layer | Component        	|     Input	      	| Output |
 |:---------------------:|:---------------------------------------------:|
 | Convolution layer 1 | 2D Convolution layer with 'VALID' padding, filter of (5x5x1) and Stride=1 | (32,32,1) 	| (28,28,6)|
@@ -86,7 +86,7 @@ My model consisted of the following layers:
 | Fully connected	layer 2	| Linear combination WX+b|120| 84|
 | | ReLU and Dropout |84| 84|
 | Fully connected	Output layer	| Linear combination WX+b|84| 43 |
-
+-->
 ![]( https://github.com/shmulik-willinger/traffic_sign_classifier/blob/master/readme_img/model.jpg?raw=true)
 
 **Model training**
@@ -97,7 +97,7 @@ The learning rate (0.001), mean (0) and sigma (0.1) were left with their default
 
 **Approach taken for finding the solution**
 
-I started with LeNet architecture and the train accuracy wasn't high enugh, so I start with changing the default parameters of the batch and epochs which improved the results.
+I started with LeNet architecture and the train accuracy wasn't high enough, so I start with changing the default parameters of the batch and epochs which improved the results.
 I applied grayscale on the dataset which give some better results and also the model is much more faster.
 After adding more images to the dataset (in the preprocessing step) I also observed better results.
 Adding the dropout function after each layer also improving the accuracy ('Max pooling' steps dosen't need it since it already performing dropout)
@@ -139,6 +139,7 @@ Also, the images background and signs brightness along with their rotation angle
 
 Here are the results of the prediction:
 
+<!---
 | Image	number	|     Sign name| Prediction	  	|
 |:---------------------:|:---------------------------------------------:|
 | Image 0 | Stop Sign    | Stop sign  	|
@@ -151,16 +152,18 @@ Here are the results of the prediction:
 | Image 7  | Speed limit 70	| Speed limit 70	|
 | Image 8  | Children crossing	| Speed limit 50	|
 | Image 9  | Speed limit 30	| Speed limit 30	|
+-->
+
+![]( https://github.com/shmulik-willinger/traffic_sign_classifier/blob/master/readme_img/predictions_table.jpg?raw=true)
 
 ![]( https://github.com/shmulik-willinger/traffic_sign_classifier/blob/master/readme_img/prediction_performance.jpg?raw=true)
-
-![]( https://github.com/shmulik-willinger/traffic_sign_classifier/blob/master/readme_img/new_images_predictions.jpg?raw=true)
-
 
 The model was able to correctly predict 5 of the 10 traffic signs, which gives an accuracy of 50%. This compares favorably to the accuracy on the test set of 93.4%. The model didn't perform well on half of the new images.
 
 The images that were not included at all in the training dataset (no suitable class) were labled incorrectly. The other images were processed differently (angles, cropped etc.) so the model also failed to classify some of them correctly.
 I noticed that the model classify 20% og the images as 'Dangerous curve', while one of this images is understandable (image:3 , Double curve) while it's quite similar, while I was disappointed from image:5 (Speed limit 30) that the model failed on.
+
+![]( https://github.com/shmulik-willinger/traffic_sign_classifier/blob/master/readme_img/new_images_predictions.jpg?raw=true)
 
 **softmax probabilities prediction**
 

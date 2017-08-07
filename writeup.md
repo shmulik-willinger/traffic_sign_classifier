@@ -87,6 +87,7 @@ My model consisted of the following layers:
 | | ReLU and Dropout |84| 84|
 | Fully connected	Output layer	| Linear combination WX+b|84| 43 |
 
+![]( https://github.com/shmulik-willinger/traffic_sign_classifier/blob/master/readme_img/model.jpg?raw=true)
 
 **Model training**
 
@@ -110,7 +111,7 @@ Training was performed on an Amazon g2.2xlarge GPU server, and it took about 16 
 
 My final model results were:
 * training set accuracy of 96.2%
-* validation set accuracy of 95.7%
+* validation set accuracy of 95.2%
 * test set accuracy of 93.4%
 
 ![]( https://github.com/shmulik-willinger/traffic_sign_classifier/blob/master/readme_img/validation_accuracy.jpg?raw=true)
@@ -138,39 +139,46 @@ Also, the images background and signs brightness along with their rotation angle
 
 Here are the results of the prediction:
 
-| Image	number		        |     Sign name| Prediction	        					|
+| Image	number	|     Sign name| Prediction	  	|
 |:---------------------:|:---------------------------------------------:|
-| Stop Sign      		| Stop sign   									|
-| U-turn     			| U-turn 										|
-| Yield					| Yield											|
-| 100 km/h	      		| Bumpy Road					 				|
-| Slippery Road			| Slippery Road      							|
+| Image 0 | Stop Sign    | Stop sign  	|
+| Image 1  | Keep right  | Keep right 		|
+| Image 2  | Caution Falling cows		| Ahead	only |
+| Image 3  | Double curve		| Dangerous curve to the right	|
+| Image 4  | Bumpy road	| Road work	|
+| Image 5  | Speed limit 30	| Dangerous curve to the left		|
+| Image 6  | Road work	| Road work	|
+| Image 7  | Speed limit 70	| Speed limit 70	|
+| Image 8  | Children crossing	| Speed limit 50	|
+| Image 9  | Speed limit 30	| Speed limit 30	|
+
+![]( https://github.com/shmulik-willinger/traffic_sign_classifier/blob/master/readme_img/prediction_performance.jpg?raw=true)
+
+![]( https://github.com/shmulik-willinger/traffic_sign_classifier/blob/master/readme_img/new_images_predictions.jpg?raw=true)
 
 
-The model was able to correctly guess 4 of the 5 traffic signs, which gives an accuracy of 80%. This compares favorably to the accuracy on the test set of 96%. The model didn't perform well on the new images.
+The model was able to correctly predict 5 of the 10 traffic signs, which gives an accuracy of 50%. This compares favorably to the accuracy on the test set of 93.4%. The model didn't perform well on half of the new images.
 
-The images that were not included at all in the training dataset (no suitable class) were labled incorrectly. The other images were processed differently (angles, cropped etc.) so the model also failed to classify them correctly.
-I noticed that the model classify unknown signes as class-19 (Roundabout signs)
+The images that were not included at all in the training dataset (no suitable class) were labled incorrectly. The other images were processed differently (angles, cropped etc.) so the model also failed to classify some of them correctly.
+I noticed that the model classify 20% og the images as 'Dangerous curve', while one of this images is understandable (image:3 , Double curve) while it's quite similar, while I was disappointed from image:5 (Speed limit 30) that the model failed on.
 
-####3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
+**softmax probabilities prediction**
 
-**Model's predictions on the New Images**
+The code for making predictions on my final model is located in the 63th cell of the Ipython notebook.
 
-The code for making predictions on my final model is located in the 11th cell of the Ipython notebook.
+We are looking at the softmax probabilities for each prediction to display how certain the model is when predicting each of the images.
+Below we can see the visualizations results of the top 5 softmax probabilities for each image along with the sign type of each probability:
 
-For the first image, the model is relatively sure that this is a stop sign (probability of 0.6), and the image does contain a stop sign. The top five soft max probabilities were
+![]( https://github.com/shmulik-willinger/traffic_sign_classifier/blob/master/readme_img/softmax.jpg?raw=true)
 
-| Probability         	|     Prediction	        					|
-|:---------------------:|:---------------------------------------------:|
-| .60         			| Stop sign   									|
-| .20     				| U-turn 										|
-| .05					| Yield											|
-| .04	      			| Bumpy Road					 				|
-| .01				    | Slippery Road      							|
+For almost all the images the predictor was very certain with probability of more than 50%, even when the results were wrong.
 
+I noticed that for some of the images - I got different predictions each time I ran the model (also with high probability on them) which is quite strange
 
-For almost all the images the predictor was very certain, even when the results were wrong.
-I noticed that for some of the images - I got different predictions each time I ran the model (with high probability on them)
+For the images that were predict correctly we can observe probability of more than 90% which is preety satisfying.
 
-### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
-####1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
+Augmenting the training set definitely help improve model performance. I used rotation and translation as data augmentation techniques, after searching the web for new images I noticed that it's important to use also zoom, flips and color perturbation
+
+### (Optional) Visualizing the Neural Network
+I added the code that suppose to run the FeatureMap function, but I ran into some issues with calling the tensorflow session inside the function (guess I'm missing something there).
+Hope to come back to it later on

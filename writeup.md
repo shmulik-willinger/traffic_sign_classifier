@@ -43,8 +43,8 @@ I decided to generate additional data In order to raise the number of dataset sa
 
 I used cv2 library to create Perspective Transform and rotation for the new augmented images.
 
-All the images were also Transformed to grayscale, since I noticed the accuracy of the model was higher this way, and of couse it also shorten the model runtime.
-from shape (32,32,3) to (32,32,1)
+All the images were also transformed to grayscale, since I noticed the accuracy of the model was higher this way, and of course it also shorten the model runtime.
+From shape (32,32,3) to (32,32,1)
 
 Here is a sample of the grayscale dataset, displaying the first image from each class:
 
@@ -91,20 +91,20 @@ My model consisted of the following layers:
 
 **Model training**
 
-To train the model, I used LeNet architecture as a baseline, with additional 2D Convolution layer and a couple of parameter tunning.
-batch size was set to 100, and I also used 100 epochs.
+To train the model, I used LeNet architecture as a baseline, with additional 2D Convolution layer and a couple of parameter tuning.
+Batch size was set to 100, and I also used 100 epochs.
 The learning rate (0.001), mean (0) and sigma (0.1) were left with their default values.   
 
 **Approach taken for finding the solution**
 
 I started with LeNet architecture and the train accuracy wasn't high enough, so I start with changing the default parameters of the batch and epochs which improved the results.
-I applied grayscale on the dataset which give some better results and also the model is much more faster.
+I applied grayscale on the dataset which give some better results and also the model is much faster.
 After adding more images to the dataset (in the preprocessing step) I also observed better results.
-Adding the dropout function after each layer also improving the accuracy ('Max pooling' steps dosen't need it since it already performing dropout)
-ReLU activation function produced better results then sigmoid.
+Adding the dropout function after each layer also improving the accuracy ('Max pooling' steps doesn't need it since it already performing dropout)
+ReLU activation function produced better results than sigmoid.
 I found that splitting the LeNet first Convolution layer to two 2D Convolution layers helps getting higher accuracy.
 I left the learning rate and the Mean as is since after trying to change them a little bit I didn't get better results.
-There are lots options to change parameters in the Model - padding, stride, filters, connected shapes, weight and bias initialization and more. I tunned them many times till I got results to my satisfaction.
+There are lots options to change parameters in the Model - padding, stride, filters, connected shapes, weight and bias initialization and more. I tuned them many times till I got results to my satisfaction.
 AdamOptimizer was set instead of the GradientDescentOptimizer since its using 'momentum'.
 
 Training was performed on an Amazon g2.2xlarge GPU server, and it took about 16 minutes.
@@ -128,9 +128,9 @@ Here are 10 German traffic signs that I found on the web:
 
 ![]( https://github.com/shmulik-willinger/traffic_sign_classifier/blob/master/readme_img/new_images.jpg?raw=true)
 
-Some of the image (image:0, and image:5) might be difficult to classify because they have two signs combined in each of them. The classifies might label it as one of the signs or non of them.
+Some of the image (image:0, and image:5) might be difficult to classify because they have two signs combined in each of them. The classifier might label it as one of the signs or none of them.
 The third image (image:2) has a sign that is not part of the train dataset classes, meaning the classifier is lack of information about it and probably will not label it right.
-The other images has the stick of the sign occupies a large part of the picture, and since the images needs to get through the same preprocessing stage (grayscale, normalization, resizing to 32x32 etc.) before running the model on them, the sign size in the images might be significantly smaller then the train dataset.
+The other images has the stick of the sign occupies a large part of the picture, and since the images needs to get through the same preprocessing stage (grayscale, normalization, resizing to 32x32 etc.) before running the model on them, the sign size in the images might be significantly smaller than the train dataset.
 
 Also, the images background and signs brightness along with their rotation angles can be challenging.
 
@@ -178,7 +178,7 @@ For almost all the images the predictor was very certain with probability of mor
 
 I noticed that for some of the images - I got different predictions each time I ran the model (also with high probability on them) which is quite strange
 
-For the images that were predict correctly we can observe probability of more than 90% which is preety satisfying.
+For the images that were predict correctly we can observe probability of more than 90% which is pretty satisfying.
 
 Augmenting the training set definitely help improve model performance. I used rotation and translation as data augmentation techniques, after searching the web for new images I noticed that it's important to use also zoom, flips and color perturbation
 
